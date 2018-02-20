@@ -2,10 +2,11 @@ package com.github.aliakseikaraliou.expertsystem;
 
 import com.github.aliakseikaraliou.andromeda.utils.java.CollectionUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Property {
+public class Property implements Serializable {
 
     private final String mName;
     private boolean mChecked;

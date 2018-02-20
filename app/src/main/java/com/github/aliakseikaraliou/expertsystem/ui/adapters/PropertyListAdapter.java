@@ -1,4 +1,4 @@
-package com.github.aliakseikaraliou.expertsystem.ui;
+package com.github.aliakseikaraliou.expertsystem.ui.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,22 +7,23 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.aliakseikaraliou.expertsystem.R;
+import com.github.aliakseikaraliou.expertsystem.ui.viewHolders.RecyclerViewHolder;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class SingleLineAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
+public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
 
     private final Context mContext;
     private List<String> mList;
 
-    public SingleLineAdapter(final Context pContext, final List<String> pList) {
+    public PropertyListAdapter(final Context pContext, final List<String> pList) {
         mContext = pContext;
         mList = new ArrayList<>(pList);
     }
 
-    public SingleLineAdapter(final Context pContext) {
+    public PropertyListAdapter(final Context pContext) {
         this(pContext, new ArrayList<String>());
     }
 

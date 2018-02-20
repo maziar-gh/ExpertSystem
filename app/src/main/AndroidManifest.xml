@@ -16,9 +16,10 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activities.PropertyActivity">
-        </activity>
-        <activity android:name=".ui.activities.ItemActivity">
+        <activity android:name=".ui.activities.PropertyActivity"/>
+        <activity android:name=".ui.activities.ItemListActivity"/>
+        <activity android:name=".ui.activities.ItemActivity"/>
+        <activity android:name=".ui.activities.ExpertSystemActivity">
         </activity>
     </application>
 

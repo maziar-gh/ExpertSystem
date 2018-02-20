@@ -2,6 +2,8 @@ package com.github.aliakseikaraliou.expertsystem.helpers;
 
 import android.content.Context;
 
+import com.github.aliakseikaraliou.andromeda.utils.java.StringUtils;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -85,7 +87,9 @@ public final class InternalStorageHelper {
             String line;
 
             while ((line = bufferedReader.readLine()) != null) {
-                result.add(line);
+                if (StringUtils.isEmpty(line)) {
+                    result.add(line);
+                }
             }
 
             return result;

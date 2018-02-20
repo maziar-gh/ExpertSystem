@@ -7,7 +7,7 @@ import com.github.aliakseikaraliou.andromeda.utils.java.StringUtils;
 import com.github.aliakseikaraliou.expertsystem.Item;
 import com.github.aliakseikaraliou.expertsystem.helpers.InternalStorageHelper;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -30,9 +30,18 @@ public class ItemHolder {
         InternalStorageHelper.appendLine(pContext, EXPERT, StringUtils.join(pItem.getProperties(), SEPARATOR));
     }
 
+    public void rewrite(final Context pContext, final Iterable<Item> pItems) {
+        pContext.deleteFile(ITEMS);
+        pContext.deleteFile(EXPERT);
+
+        for (final Item item : pItems) {
+            add(pContext, item);
+        }
+    }
+
     public List<Item> getAll(final Context pContext) {
-        final List<String> lines = InternalStorageHelper.readByLines(pContext, ITEMS);
-        final Collection<List<Integer>> properties = CollectionUtils.map(InternalStorageHelper.readByLines(pContext, EXPERT), new CollectionUtils.CollectionMapper<String, List<Integer>>() {
+        final List<String> lines = readByLines(pContext, ITEMS);
+        final Collection<List<Integer>> properties = CollectionUtils.map(readByLines(pContext, EXPERT), new CollectionUtils.CollectionMapper<String, List<Integer>>() {
 
             @Override
             public List<Integer> map(final String pS) {
@@ -45,8 +54,7 @@ public class ItemHolder {
                 });
             }
         });
-        new StringBuilder();
-        return null;
+        return Item.createFrom(lines, (List<List<Integer>>) properties);
     }
 
     public Item getItem(final Context pContext, final int pPosition) {
@@ -63,6 +71,27 @@ public class ItemHolder {
 
     public String getProperties(final Context pContext, final int pPosition) {
         return InternalStorageHelper.readLine(pContext, EXPERT, pPosition);
+    }
+
+    public void addProperty(final Context pContext, final List<Integer> pValues) {
+        final List<Item> items = getAll(pContext);
+
+        for (int i = 0; i < items.size(); i++) {
+            final int value = pValues.get(i);
+            items.get(i).getProperties().add(value);
+        }
+
+        rewrite(pContext, items);
+    }
+
+    private List<String> readByLines(final Context pContext, final String pFileName) {
+        final String properties = InternalStorageHelper.readAll(pContext, pFileName);
+
+        if (!StringUtils.isEmpty(properties)) {
+            return CollectionUtils.toList(properties.split("\n"));
+        } else {
+            return new ArrayList<>();
+        }
     }
 
 }

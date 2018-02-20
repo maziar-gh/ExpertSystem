@@ -1,6 +1,7 @@
 package com.github.aliakseikaraliou.expertsystem.ui.activities;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -13,39 +14,39 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
-import com.github.aliakseikaraliou.andromeda.utils.java.CollectionUtils;
+import com.github.aliakseikaraliou.andromeda.interfaces.OnItemClickListener;
 import com.github.aliakseikaraliou.andromeda.utils.java.StringUtils;
 import com.github.aliakseikaraliou.expertsystem.Item;
+import com.github.aliakseikaraliou.expertsystem.Property;
 import com.github.aliakseikaraliou.expertsystem.R;
 import com.github.aliakseikaraliou.expertsystem.holders.ItemHolder;
 import com.github.aliakseikaraliou.expertsystem.holders.PropertyHolder;
-import com.github.aliakseikaraliou.expertsystem.ui.adapters.ItemListDialogAdapter;
-import com.github.aliakseikaraliou.expertsystem.ui.adapters.PropertyListAdapter;
+import com.github.aliakseikaraliou.expertsystem.ui.adapters.ItemListAdapter;
+import com.github.aliakseikaraliou.expertsystem.ui.adapters.PropertyListDialogAdapter;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
-public class PropertyActivity extends AppCompatActivity {
+public class ItemListActivity extends AppCompatActivity {
 
     private RecyclerView mRecycler;
 
     @Override
     protected void onCreate(final Bundle pSavedInstanceState) {
         super.onCreate(pSavedInstanceState);
-        setContentView(R.layout.activity_property);
+        setContentView(R.layout.activity_itemlist);
 
         mRecycler = findViewById(R.id.recycler);
 
         forceLoad();
+
         mRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle("Properties");
+            actionBar.setTitle("Items");
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
     }
 
     @Override
@@ -60,7 +61,7 @@ public class PropertyActivity extends AppCompatActivity {
 
         switch (itemId) {
             case R.id.add:
-                addProperty();
+                addItem();
                 break;
             case android.R.id.home:
                 onBackPressed();
@@ -70,18 +71,15 @@ public class PropertyActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(pMenuItem);
     }
 
-    private void addProperty() {
-        final ItemHolder itemHolder = ItemHolder.getInstance();
-
-        final List<Item> items = itemHolder.getAll(this);
-        final List<Boolean> booleans = new ArrayList<>(Collections.nCopies(items.size(), false));
-
+    private void addItem() {
         final View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add, null);
         final EditText itemName = dialogView.findViewById(R.id.item_name);
+
         final RecyclerView recycler = dialogView.findViewById(R.id.recycler);
         recycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
-        final ItemListDialogAdapter adapter = new ItemListDialogAdapter(this, items, booleans);
+        final List<Property> properties = Property.createFrom(PropertyHolder.getInstance().getAll(this));
+        final PropertyListDialogAdapter adapter = new PropertyListDialogAdapter(this, properties);
         recycler.setAdapter(adapter);
 
         final AlertDialog alertDialog = new AlertDialog.Builder(this)
@@ -91,19 +89,11 @@ public class PropertyActivity extends AppCompatActivity {
                     @Override
                     public void onClick(final DialogInterface dialog, final int which) {
                         final String name = itemName.getText().toString();
-
                         if (!StringUtils.isEmpty(name)) {
+                            final List<Integer> response = Property.getResponse(properties);
+                            final Item item = new Item(name, response);
 
-                            final Collection<Integer> values = CollectionUtils.map(booleans, new CollectionUtils.CollectionMapper<Boolean, Integer>() {
-
-                                @Override
-                                public Integer map(final Boolean pBoolean) {
-                                    return pBoolean ? 1 : 0;
-                                }
-                            });
-
-                            PropertyHolder.getInstance().add(PropertyActivity.this, name);
-                            ItemHolder.getInstance().addProperty(PropertyActivity.this, ((List<Integer>) values));
+                            ItemHolder.getInstance().add(ItemListActivity.this, item);
 
                             forceLoad();
                         }
@@ -114,10 +104,22 @@ public class PropertyActivity extends AppCompatActivity {
                 .create();
 
         alertDialog.show();
+
     }
 
     private void forceLoad() {
-        final PropertyListAdapter propertyListAdapter = new PropertyListAdapter(this, PropertyHolder.getInstance().getAll(this));
-        mRecycler.setAdapter(propertyListAdapter);
+        final List<Item> items = ItemHolder.getInstance().getAll(this);
+
+        final ItemListAdapter adapter = new ItemListAdapter(this, items);
+        adapter.setItemClickListener(new OnItemClickListener<Item>() {
+
+            @Override
+            public void onItemClick(final Item pItem) {
+                final Intent intent = new Intent(ItemListActivity.this, ItemActivity.class);
+                intent.putExtra(ItemActivity.ITEM, pItem);
+                startActivity(intent);
+            }
+        });
+        mRecycler.setAdapter(adapter);
     }
 }

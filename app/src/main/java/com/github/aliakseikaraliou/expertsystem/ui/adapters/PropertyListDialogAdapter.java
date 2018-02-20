@@ -1,4 +1,4 @@
-package com.github.aliakseikaraliou.expertsystem.ui;
+package com.github.aliakseikaraliou.expertsystem.ui.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,15 +9,16 @@ import android.widget.CompoundButton;
 
 import com.github.aliakseikaraliou.expertsystem.Property;
 import com.github.aliakseikaraliou.expertsystem.R;
+import com.github.aliakseikaraliou.expertsystem.ui.viewHolders.RecyclerViewHolder;
 
 import java.util.List;
 
-public class CheckLineAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
+public class PropertyListDialogAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
 
     private final Context mContext;
     private List<Property> mList;
 
-    public CheckLineAdapter(final Context pContext, final List<Property> pList) {
+    public PropertyListDialogAdapter(final Context pContext, final List<Property> pList) {
         mContext = pContext;
         mList = pList;
     }
@@ -26,7 +27,7 @@ public class CheckLineAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
     public RecyclerViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
         final View view = LayoutInflater.from(mContext).inflate(R.layout.view_checkline, parent, false);
 
-        ((CompoundButton) view.findViewById(R.id.property)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        ((CompoundButton) view.findViewById(R.id.text)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {

@@ -1,4 +1,4 @@
-package com.github.aliakseikaraliou.expertsystem.ui;
+package com.github.aliakseikaraliou.expertsystem.ui.viewHolders;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -12,7 +12,7 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder {
 
     public RecyclerViewHolder(final View itemView) {
         super(itemView);
-        mProperty = itemView.findViewById(R.id.property);
+        mProperty = itemView.findViewById(R.id.text);
     }
 
     public void setText(final String pText) {

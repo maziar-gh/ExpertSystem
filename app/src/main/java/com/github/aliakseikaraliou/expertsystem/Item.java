@@ -1,10 +1,10 @@
 package com.github.aliakseikaraliou.expertsystem;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-public class Item {
+public class Item implements Serializable {
 
     private final String name;
     private final List<Integer> mProperties;
